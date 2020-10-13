@@ -24,9 +24,19 @@ class Library
 	 */
 	public function read($filename, $mode = 'r')
 	{
-		$fh = fopen('file.txt', 'r');
+		if (!file_exists($filename) || !is_readable($filename)){
+			$message = sprintf('File %s not found.', $filename);
+			throw new \Exception($message);
+		}
 
-		$headings = $this->getHeadings();
+		if (!is_readable($filename)){
+			$message = sprintf('File %s not readable.', $filename);
+			throw new \Exception($message);
+		}
+
+		$fh = fopen($filename, 'r');
+
+		$headings = $this->getColumns();
 		$expected_count = count($headings);
 
 		$i = 0;
@@ -57,14 +67,70 @@ class Library
 	public function transform($row)
 	{
 		// What transformations do we want?
-		// Ideas: trim, cast/convert dates, integers, bool
+		// Ideas: trim, convert null, convert bool
+
+		$transformations = $this->getTransformations();
+
+		if (array_key_exists('*', $transformations)){
+			// Perform this transformation on every item in the array.
+			foreach ($row as $key=>$value){
+				$this->transformItem($row, $transformations['*']);
+			}
+		}
+
+		foreach ($row as $key=>$value){
+			if (array_key_exists('*', $transformations)){
+				// Perform this transformation on every item.
+				$this->transformItem($row, $transformations['*']);
+			}
+
+			if (array_key_exists($key, $transformations)){
+				// Perform transformation specific to this item.
+				$this->transformItem($row, $transformations[$key]);
+			}
+		}
+
 		return $row;
+	}
+
+	public function transformItem($item, $transformation)
+	{
+		$transformations = explode('|', $transformation);
+
+		foreach ($transformations as $t){
+
+			// trim the string.
+			if ($t == 'trim'){
+				$item = trim($item);
+			}
+
+			// Convert empty values to null.
+			if ($t == 'null'){
+				if (trim($t) == ''){
+					$t = null;
+				}
+			}
+
+			// Convert truthy values to boolean.
+			if ($t == 'bool'){
+				$t = filter_var($t, FILTER_VALIDATE_BOOL);
+			}
+		}
+
+		return $item;
+	}
+
+	public function getTransformations()
+	{
+		return [
+			'*' => 'trim|null|bool'
+		];
 	}
 
 	/**
 	 * @return array
 	 */
-	public function getHeadings()
+	public function getColumns()
 	{
 		return [];
 	}
