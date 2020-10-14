@@ -4,6 +4,21 @@
 
 Reading delimited files... the Simpl way!
 
+Why should you use this? `fgetcsv()` is already pretty good, right?
+
+Yes, `fgetcsv()` is pretty good, and this package uses it under this hood - with some quality of life improvements.
+
+The main benefits of this package are:
+
+- Easy to set number of records to skip (like headings)
+- You can give it an array of column headings and it will return the parsed row as an associative array.
+    - This means you get to work with array keys you define instead of having to remember the numerical position.
+- This provides some basic transformations out of the box.
+    - Automatically trim all values.
+    - Automatically convert empty strings to `null`.
+- If you provide column headings, it will compare the number of column headings to the number of columns it
+parsed from each row and throw an exception if your data is missing a column.
+
 ## Installation
 
 ```bash

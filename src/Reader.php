@@ -38,14 +38,9 @@ class Reader
 	 */
 	public function __construct($filename, $mode = 'r')
 	{
-		if (!file_exists($filename) || !is_readable($filename)) {
+		if (!file_exists($filename)) {
 			$message = sprintf('File %s not found.', $filename);
 			throw new FileNotFoundException($message);
-		}
-
-		if (!is_readable($filename)) {
-			$message = sprintf('File %s not readable.', $filename);
-			throw new FileNotReadableException($message);
 		}
 
 		$this->file_handle = fopen($filename, 'r');
@@ -64,19 +59,21 @@ class Reader
 		return static::$instance;
 	}
 
+	/**
+	 * @param bool $trim
+	 * @param bool $convert_empty_to_null
+	 * @return array|false|null
+	 * @throws InvalidColumnCountException
+	 */
 	public function read($trim = true, $convert_empty_to_null = true)
 	{
 		++$this->current_line;
 
-		$columns = $this->getColumns();
-
-		$expected_count = false;
-
-		if (!empty($columns)) {
-			$expected_count = count($columns);
-		}
-
 		$row = fgetcsv($this->file_handle, $this->max_line_length, $this->delimiter, $this->enclosure, $this->escape);
+
+		if ($this->skip_count > 0 && $this->current_line <= $this->skip_count) {
+			return $this->read();
+		}
 
 		if (!$row) {
 			return false;
@@ -94,23 +91,23 @@ class Reader
 			}, $row);
 		}
 
-		if ($this->skip_count > 0 && $this->current_line <= $this->skip_count) {
-			return $this->read();
-		}
-
 		// Combine the parsed row array with the headings array so we can work with this as an associate
 		// array with sane keys.
+
+		$columns = $this->getColumns();
+
 		if (!empty($columns)) {
+			$expected_count = count($columns);
+			$actual_count = count($row);
+
+			if ($expected_count != $actual_count) {
+				$error = sprintf('Field Count %d != Heading Count %s', $actual_count, $expected_count);
+				throw new InvalidColumnCountException($error);
+			}
+
 			$row = array_combine($columns, $row);
 		}
 
-//		$actual_count = count($row);
-//
-//		if ($expected_count !== false && $expected_count != $actual_count){
-//			$error = sprintf('Field Count %d != Heading Count %s', $actual_count, $expected_count);
-//			throw new \Exception($error);
-//		}
-//
 		return $row;
 	}
 

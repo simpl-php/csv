@@ -3,7 +3,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Simpl\Csv\FileNotFoundException;
-use Simpl\Csv\FileNotReadableException;
+use Simpl\Csv\InvalidColumnCountException;
 use Simpl\Csv\Reader;
 
 class ReaderTest extends TestCase
@@ -79,5 +79,16 @@ class ReaderTest extends TestCase
 	{
 		$this->expectException(FileNotFoundException::class);
 		$csv = Reader::createFromFile(static::getResourcePath('does-not-exist'));
+	}
+
+	function testShouldThrowInvalidColumnCountException()
+	{
+		$this->expectException(InvalidColumnCountException::class);
+		$csv = Reader::createFromFile(static::getResourcePath('captains-comma-delimited-invalid-column-count.csv'));
+		$csv->setColumns(['captain', 'ship', 'series']);
+
+		while($row = $csv->read()){
+			// Do nothing. Just need the loop to get to the bad piece of data.
+		}
 	}
 }
