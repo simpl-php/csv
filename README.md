@@ -6,7 +6,7 @@ Reading delimited files... the Simpl way!
 
 Why should you use this? `fgetcsv()` is already pretty good, right?
 
-Yes, `fgetcsv()` is pretty good, and this package uses it under this hood - with some quality of life improvements.
+Yes, `fgetcsv()` is pretty good, and this package uses it under the hood - with some quality of life improvements.
 
 The main benefits of this package are:
 
