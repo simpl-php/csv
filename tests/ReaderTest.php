@@ -2,6 +2,8 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use Simpl\Csv\FileNotFoundException;
+use Simpl\Csv\FileNotReadableException;
 use Simpl\Csv\Reader;
 
 class ReaderTest extends TestCase
@@ -71,5 +73,11 @@ class ReaderTest extends TestCase
 		}
 
 		$this->assertEquals(4, $count);
+	}
+
+	function testShouldThrowFileNotFoundException()
+	{
+		$this->expectException(FileNotFoundException::class);
+		$csv = Reader::createFromFile(static::getResourcePath('does-not-exist'));
 	}
 }

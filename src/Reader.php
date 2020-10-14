@@ -40,12 +40,12 @@ class Reader
 	{
 		if (!file_exists($filename) || !is_readable($filename)) {
 			$message = sprintf('File %s not found.', $filename);
-			throw new \Exception($message);
+			throw new FileNotFoundException($message);
 		}
 
 		if (!is_readable($filename)) {
 			$message = sprintf('File %s not readable.', $filename);
-			throw new \Exception($message);
+			throw new FileNotReadableException($message);
 		}
 
 		$this->file_handle = fopen($filename, 'r');
@@ -104,6 +104,13 @@ class Reader
 			$row = array_combine($columns, $row);
 		}
 
+//		$actual_count = count($row);
+//
+//		if ($expected_count !== false && $expected_count != $actual_count){
+//			$error = sprintf('Field Count %d != Heading Count %s', $actual_count, $expected_count);
+//			throw new \Exception($error);
+//		}
+//
 		return $row;
 	}
 
@@ -145,22 +152,3 @@ class Reader
 		return $this->columns;
 	}
 }
-
-/*
-if (++$i == 1 && $this->skip_first_row){
-// Skip the first row.
-continue;
-}
-
-
-
-$actual_count = count($row);
-
-if ($expected_count !== false && $expected_count != $actual_count){
-$error = sprintf('Field Count %d != Heading Count %s', $actual_count, $expected_count);
-throw new \Exception($error);
-}
-
-return $row;
-
- */
