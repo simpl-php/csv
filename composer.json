@@ -1,8 +1,8 @@
 {
-    "name": "simpl/library-skeleton",
-    "description": "",
+    "name": "simpl/csv",
+    "description": "Makes reading CSV files Simpl!",
     "license": "MIT",
-    "homepage": "https://github.com/simple-php/library-skeleton",
+    "homepage": "https://github.com/simple-php/csv",
     "authors": [
         {
             "name": "Josh Moody",
@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Simpl\\": "src/"
+            "Simpl\\Csv\\": "src/"
         }
     },
     "autoload-dev": {

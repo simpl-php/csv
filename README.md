@@ -1,21 +1,29 @@
-# Simple/project-name
+# Simpl/Csv
 
-[![Build Status](https://img.shields.io/travis/simpl-php/config.svg?style=flat-square)](https://travis-ci.org/simpl-php/config)
+[![Build Status](https://img.shields.io/travis/simpl-php/csv.svg?style=flat-square)](https://travis-ci.org/simpl-php/csv)
 
-Skeleton for creating new simpl-php libraries.
+Reading delimited files... the Simpl way!
 
 ## Installation
 
 ```bash
-composer require simpl/project-name
+composer require simpl/csv
 ```
 
 ## Basic Usage
 ```php
 <?php
+$csv = Reader::createFromFile('/path/to/your/file.csv');
+$csv->setColumns(['name', 'address', 'phone']);
+$csv->setSkipRows(1);
+
+while($row = $csv->read())
+{
+    print_r($row['address']);
+}
 ```
 
-See <https://simpl-php.com/components/project-name> for full documentation.
+See <https://simpl-php.com/components/csv> for full documentation.
 
 ## Testing
 

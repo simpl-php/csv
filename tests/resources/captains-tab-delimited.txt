@@ -1,0 +1,5 @@
+captain	ship	series
+"Kirk, James T"	Enterprise	TOS
+Jean-Luc Picard	Enterprise	TNG
+"Janeway, Kathryn"	Voyager	STV
+Jonathan Archer	Enterprise	STE
