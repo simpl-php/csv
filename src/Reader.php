@@ -72,7 +72,7 @@ class Reader
 		$row = fgetcsv($this->file_handle, $this->max_line_length, $this->delimiter, $this->enclosure, $this->escape);
 
 		if ($this->skip_count > 0 && $this->current_line <= $this->skip_count) {
-			return $this->read();
+			return $this->read($trim, $convert_empty_to_null);
 		}
 
 		if (!$row) {
@@ -93,7 +93,6 @@ class Reader
 
 		// Combine the parsed row array with the headings array so we can work with this as an associate
 		// array with sane keys.
-
 		$columns = $this->getColumns();
 
 		if (!empty($columns)) {
@@ -109,6 +108,30 @@ class Reader
 		}
 
 		return $row;
+	}
+
+	public function toArray($trim = true, $convert_empty_to_null = true)
+	{
+		$parsed = [];
+
+		$this->rewind();
+
+		while ($row = $this->read($trim, $convert_empty_to_null)) {
+			$parsed[] = $row;
+		}
+
+		return $parsed;
+	}
+
+	public function toJson($trim = true, $convert_empty_to_null = true)
+	{
+		return json_encode($this->toArray($trim, $convert_empty_to_null), JSON_PRETTY_PRINT);
+	}
+
+	public function rewind()
+	{
+		$this->current_line = 0;
+		rewind($this->file_handle);
 	}
 
 	public function setSkipRows($skip = 0)

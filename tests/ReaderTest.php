@@ -91,4 +91,54 @@ class ReaderTest extends TestCase
 			// Do nothing. Just need the loop to get to the bad piece of data.
 		}
 	}
+
+	public function testCanReadToArray()
+	{
+		$csv = Reader::createFromFile(static::getResourcePath('captains-comma-delimited.csv'));
+		$csv->setColumns(['captain', 'ship', 'series']);
+		$csv->setSkipRows(1);
+
+		$array = $csv->toArray();
+
+		$this->assertTrue(is_array($array));
+		$this->assertArrayHasKey('captain', $array[0]);
+		$this->assertTrue(count($array) == 4);
+	}
+
+	public function testCanReadToJson()
+	{
+		$csv = Reader::createFromFile(static::getResourcePath('captains-comma-delimited.csv'));
+		$csv->setColumns(['captain', 'ship', 'series']);
+		$csv->setSkipRows(1);
+
+		$json = $csv->toJson();
+
+		$array = json_decode($json, true);
+
+		$this->assertTrue(is_array($array));
+		$this->assertArrayHasKey('captain', $array[0]);
+		$this->assertTrue(count($array) == 4);
+	}
+
+	public function testCanReadMultipleTimes()
+	{
+		$csv = Reader::createFromFile(static::getResourcePath('captains-comma-delimited.csv'));
+		$csv->setColumns(['captain', 'ship', 'series']);
+		$csv->setSkipRows(1);
+
+		$array = $csv->toArray();
+		$array2 = $csv->toArray();
+		$this->assertEquals($array, $array2);
+	}
+
+	public function testConvertsEmptyStringToNull()
+	{
+		$csv = Reader::createFromFile(static::getResourcePath('captains-comma-delimited-empty-values.csv'));
+		$csv->setColumns(['captain', 'ship', 'series']);
+		$csv->setSkipRows(1);
+
+		$array = $csv->toArray();
+
+		$this->assertNull($array[1]['ship']);
+	}
 }

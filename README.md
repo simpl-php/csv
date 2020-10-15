@@ -28,6 +28,7 @@ composer require simpl/csv
 ## Basic Usage
 ```php
 <?php
+use Simpl\Csv\Reader;
 $csv = Reader::createFromFile('/path/to/your/file.csv');
 $csv->setColumns(['name', 'address', 'phone']);
 $csv->setSkipRows(1);
@@ -36,6 +37,33 @@ while($row = $csv->read())
 {
     print_r($row['address']);
 }
+```
+
+It's not just for CSVs. You can use it for any delimited file by calling `setDelimiter()`.
+
+```php
+<?php
+use Simpl\Csv\Reader;
+$csv = Reader::createFromFile('/path/to/your/file.csv');
+$csv->setColumns(['name', 'address', 'phone']);
+$csv->setDelimiter("\t");
+$csv->setSkipRows(1);
+
+while($row = $csv->read())
+{
+    print_r($row['address']);
+}
+```
+
+
+You can also return the entire file as an array or json object. 
+```
+use Simpl\Csv\Reader;
+$csv = Reader::createFromFile('/path/to/your/file.csv');
+$csv->setColumns(['name', 'address', 'phone']);
+$csv->setSkipRows(1);
+$array = $csv->toArray();
+$json = $csv->toJson();
 ```
 
 See <https://simpl-php.com/components/csv> for full documentation.
