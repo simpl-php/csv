@@ -19,7 +19,7 @@ The main benefits of this package are:
     - Automatically convert empty strings to `null`.
 - If you provide column headings, it will compare the number of column headings to the number of columns it
 parsed from each row and throw an exception if your data is missing a column.
-- Return the full CSV and an array or json object.
+- Return the full CSV as an array or json object.
 
 ## Installation
 
